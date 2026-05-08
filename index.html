@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TETRIS — Arcade Rétro-Futuriste</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%230a0e27'/><rect x='2' y='2' width='12' height='12' rx='1' fill='%2300ffff' filter='url(%23g)'/><rect x='18' y='2' width='12' height='12' rx='1' fill='%23ff006e'/><rect x='2' y='18' width='12' height='12' rx='1' fill='%2300ff88'/><rect x='18' y='18' width='12' height='12' rx='1' fill='%23ffff00'/><defs><filter id='g'><feGaussianBlur stdDeviation='1' result='b'/><feMerge><feMergeNode in='b'/><feMergeNode in='SourceGraphic'/></feMerge></filter></defs></svg>" />
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/animations.css" />
+  <link rel="stylesheet" href="css/responsive.css" />
+</head>
+<body>
+
+<!-- SCAN LINES OVERLAY -->
+<div class="scanlines"></div>
+<div class="vignette"></div>
+
+<!-- MAIN MENU -->
+<div id="main-menu" class="screen active">
+  <div class="menu-bg-grid"></div>
+  <div class="menu-content">
+    <div class="title-wrapper">
+      <div class="title-glow">TETRIS</div>
+      <h1 class="title-main">TETRIS</h1>
+      <div class="title-sub">ARCADE RÉTRO-FUTURISTE</div>
+    </div>
+    <div class="menu-buttons">
+      <button class="btn-arcade btn-primary" id="btn-start">▶ JOUER</button>
+      <button class="btn-arcade" id="btn-modes">🎮 MODES</button>
+      <button class="btn-arcade" id="btn-scores">🏆 SCORES</button>
+      <button class="btn-arcade" id="btn-skins">🎨 SKINS</button>
+    </div>
+    <div class="menu-controls-hint">
+      <span>← → / Q D BOUGER</span>
+      <span>↑ / Z ROTATION</span>
+      <span>ESPACE HARD-DROP</span>
+      <span>↓ / S SOFT-DROP</span>
+      <span>E HOLD</span>
+    </div>
+  </div>
+</div>
+
+<!-- GAME MODE SELECT -->
+<div id="mode-select" class="screen">
+  <div class="screen-inner">
+    <h2 class="screen-title">MODES DE JEU</h2>
+    <div class="mode-grid">
+      <div class="mode-card" data-mode="classic">
+        <div class="mode-icon">🕹️</div>
+        <div class="mode-name">CLASSIC</div>
+        <div class="mode-desc">Jeu standard. Game over si le sommet est atteint.</div>
+      </div>
+      <div class="mode-card" data-mode="survival">
+        <div class="mode-icon">💥</div>
+        <div class="mode-name">SURVIVAL</div>
+        <div class="mode-desc">Des lignes remontent du bas. Résiste le plus longtemps possible !</div>
+      </div>
+      <div class="mode-card" data-mode="sprint">
+        <div class="mode-icon">⚡</div>
+        <div class="mode-name">SPRINT</div>
+        <div class="mode-desc">40 lignes le plus vite possible.</div>
+      </div>
+      <div class="mode-card" data-mode="timeattack">
+        <div class="mode-icon">⏱️</div>
+        <div class="mode-name">TIME ATTACK</div>
+        <div class="mode-desc">3 minutes. Score maximum.</div>
+      </div>
+      <div class="mode-card" data-mode="zen">
+        <div class="mode-icon">🧘</div>
+        <div class="mode-name">ZEN</div>
+        <div class="mode-desc">Pas de vitesse. Contrôle total.</div>
+      </div>
+      <div class="mode-card" data-mode="hardcore">
+        <div class="mode-icon">💀</div>
+        <div class="mode-name">HARDCORE</div>
+        <div class="mode-desc">Vitesse max dès le départ.</div>
+      </div>
+    </div>
+    <button class="btn-arcade btn-back" id="btn-mode-back">← RETOUR</button>
+  </div>
+</div>
+
+<!-- SCORES SCREEN -->
+<div id="scores-screen" class="screen">
+  <div class="screen-inner">
+    <h2 class="screen-title">🏆 MEILLEURS SCORES</h2>
+    <div id="scores-list" class="scores-list"></div>
+    <button class="btn-arcade btn-back" id="btn-scores-back">← RETOUR</button>
+  </div>
+</div>
+
+<!-- SKINS SCREEN -->
+<div id="skins-screen" class="screen">
+  <div class="screen-inner">
+    <h2 class="screen-title">🎨 THÈMES VISUELS</h2>
+    <div class="skins-grid">
+      <div class="skin-card active" data-skin="retro">
+        <div class="skin-preview skin-retro"></div>
+        <div class="skin-name">ARCADE RÉTRO</div>
+      </div>
+      <div class="skin-card" data-skin="neon">
+        <div class="skin-preview skin-neon"></div>
+        <div class="skin-name">NEON RETRO</div>
+      </div>
+      <div class="skin-card" data-skin="mono">
+        <div class="skin-preview skin-mono"></div>
+        <div class="skin-name">MONOCHROME</div>
+      </div>
+      <div class="skin-card" data-skin="pastel">
+        <div class="skin-preview skin-pastel"></div>
+        <div class="skin-name">PASTEL</div>
+      </div>
+      <div class="skin-card" data-skin="matrix">
+        <div class="skin-preview skin-matrix"></div>
+        <div class="skin-name">NEON MATRIX</div>
+      </div>
+    </div>
+    <button class="btn-arcade btn-back" id="btn-skins-back">← RETOUR</button>
+  </div>
+</div>
+
+<!-- GAME SCREEN -->
+<div id="game-screen" class="screen">
+  <!-- LEFT PANEL -->
+  <div class="side-panel side-left">
+    <div class="panel-box">
+      <div class="panel-label">SCORE</div>
+      <div class="panel-value" id="score-display">0</div>
+    </div>
+    <div class="panel-box">
+      <div class="panel-label">BEST</div>
+      <div class="panel-value" id="best-display">0</div>
+    </div>
+    <div class="panel-box">
+      <div class="panel-label">NIVEAU</div>
+      <div class="panel-value level-value" id="level-display">1</div>
+    </div>
+    <div class="panel-box">
+      <div class="panel-label">LIGNES</div>
+      <div class="panel-value" id="lines-display">0</div>
+    </div>
+    <div class="panel-box" id="timer-box" style="display:none">
+      <div class="panel-label">TEMPS</div>
+      <div class="panel-value" id="timer-display">3:00</div>
+    </div>
+    <div class="panel-box" id="sprint-box" style="display:none">
+      <div class="panel-label">OBJECTIF</div>
+      <div class="panel-value" id="sprint-display">40</div>
+    </div>
+    <div class="panel-box hold-box">
+      <div class="panel-label">HOLD <span class="key-hint">E</span></div>
+      <canvas id="hold-canvas" width="80" height="80"></canvas>
+    </div>
+  </div>
+
+  <!-- CENTER: GAME BOARD -->
+  <div class="game-center">
+    <div class="game-wrapper">
+      <div class="board-frame">
+        <canvas id="game-canvas" width="300" height="600"></canvas>
+        <!-- COMBO DISPLAY OVERLAY -->
+        <div id="combo-display" class="combo-display"></div>
+        <!-- BONUS DISPLAY OVERLAY -->
+        <div id="bonus-display" class="bonus-display"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT PANEL -->
+  <div class="side-panel side-right">
+    <div class="panel-box next-box">
+      <div class="panel-label">NEXT</div>
+      <canvas id="next-canvas" width="80" height="320"></canvas>
+    </div>
+    <div class="panel-box stats-box">
+      <div class="panel-label">STATS</div>
+      <div class="stat-row"><span>TETRIS</span><span id="stat-tetris">0</span></div>
+      <div class="stat-row"><span>T-SPIN</span><span id="stat-tspin">0</span></div>
+      <div class="stat-row"><span>COMBO</span><span id="stat-combo">0</span></div>
+      <div class="stat-row"><span>TEMPS</span><span id="stat-time">0:00</span></div>
+    </div>
+    <div class="panel-box">
+      <button class="btn-arcade btn-small" id="btn-pause">⏸ PAUSE</button>
+      <button class="btn-arcade btn-small btn-danger" id="btn-restart">↩ RESTART</button>
+      <button class="btn-arcade btn-small" id="btn-menu">🏠 MENU</button>
+    </div>
+  </div>
+
+  <!-- MOBILE CONTROLS -->
+  <div class="mobile-controls" id="mobile-controls">
+    <div class="mobile-row mobile-top">
+      <button class="mobile-btn" id="m-hold">HOLD</button>
+      <button class="mobile-btn" id="m-rotate">⟳ ROT</button>
+    </div>
+    <div class="mobile-row mobile-middle">
+      <button class="mobile-btn mobile-arrow" id="m-left">◀</button>
+      <button class="mobile-btn mobile-drop" id="m-soft">▼ SOFT</button>
+      <button class="mobile-btn mobile-arrow" id="m-right">▶</button>
+    </div>
+    <div class="mobile-row mobile-bottom">
+      <button class="mobile-btn mobile-hard" id="m-hard">⬇ HARD DROP</button>
+    </div>
+  </div>
+</div>
+
+<!-- PAUSE SCREEN -->
+<div id="pause-screen" class="screen overlay-screen">
+  <div class="overlay-box">
+    <h2 class="screen-title">⏸ PAUSE</h2>
+    <button class="btn-arcade" id="btn-resume">▶ REPRENDRE</button>
+    <button class="btn-arcade" id="btn-pause-restart">↩ RESTART</button>
+    <button class="btn-arcade" id="btn-pause-menu">🏠 MENU</button>
+    <div class="sound-toggle">
+      <button class="btn-arcade btn-small" id="btn-sound">🔊 SON</button>
+      <button class="btn-arcade btn-small" id="btn-music">🎵 MUSIQUE</button>
+    </div>
+  </div>
+</div>
+
+<!-- GAME OVER SCREEN -->
+<div id="gameover-screen" class="screen overlay-screen">
+  <div class="overlay-box">
+    <h2 class="screen-title gameover-title">GAME OVER</h2>
+    <div id="new-highscore" class="new-highscore" style="display:none">🏆 NOUVEAU RECORD !</div>
+    <div class="final-stats">
+      <div class="final-row"><span>SCORE</span><span id="go-score">0</span></div>
+      <div class="final-row"><span>NIVEAU</span><span id="go-level">1</span></div>
+      <div class="final-row"><span>LIGNES</span><span id="go-lines">0</span></div>
+      <div class="final-row"><span>TETRIS</span><span id="go-tetris">0</span></div>
+      <div class="final-row"><span>T-SPIN</span><span id="go-tspin">0</span></div>
+      <div class="final-row"><span>TEMPS</span><span id="go-time">0:00</span></div>
+    </div>
+    <button class="btn-arcade btn-primary" id="btn-play-again">▶ REJOUER</button>
+    <button class="btn-arcade" id="btn-go-menu">🏠 MENU</button>
+  </div>
+</div>
+
+<!-- LEVEL UP NOTIFICATION -->
+<div id="levelup-notif" class="levelup-notif"></div>
+
+<!-- ACHIEVEMENT NOTIFICATION -->
+<div id="achievement-notif" class="achievement-notif"></div>
+
+<script src="js/tetromino.js"></script>
+<script src="js/grid.js"></script>
+<script src="js/physics.js"></script>
+<script src="js/scoring.js"></script>
+<script src="js/hold-queue.js"></script>
+<script src="js/particles.js"></script>
+<script src="js/audio.js"></script>
+<script src="js/controls.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/game.js"></script>
+</body>
+</html>
